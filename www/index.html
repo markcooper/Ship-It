@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ship It!</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+		<meta charset="utf-8">
+		
+		<script type="text/javascript" charset="utf-8" src="js/phonegap-1.2.0.js"></script>
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="default" />
+		<link rel="stylesheet" href="jquery.mobile-1.0.min.css" type="text/css" media="screen" title="default" />
+		<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+		<script type="text/javascript" src="js/jquery.ui.touch.js"></script>
+		<script type="text/javascript" src="js/jquery-collision-1.0.1.js"></script>
+		<script type="text/javascript" src="js/jquery.mobile-1.0.min.js"></script>
+		<script type="text/javascript">
+			var pauseGame = true;
+			var ship_top_top, ship_top_left, ship_mid_top, ship_mid_left, ship_bottom_top, ship_bottom_left, ship_top_bottom, ship_top_right, ship_mid_bottom, ship_mid_right, ship_bottom_bottom, ship_bottom_right;
+			var ship_top_width = 57;
+			var ship_top_height = 17;
+			var ship_mid_width = 34;
+			var ship_mid_height = 18;
+			var ship_bottom_width = 17;
+			var ship_bottom_height = 21;
+			
+			var baddie_width = 48;
+			var baddie_height = 22;
+			
+			function getPositionShip() {
+				var top = $("#hero").position().top;
+				var left = $("#hero").position().left;
+				
+				ship_top_top = top;
+				ship_top_left = left + 16;
+				ship_top_bottom = ship_top_top + ship_top_height;
+				ship_top_right = ship_top_left + ship_top_width;
+				
+				ship_mid_top = top + 17;
+				ship_mid_left = left + 30;
+				ship_mid_bottom = ship_mid_top + ship_mid_height;
+				ship_mid_right = ship_mid_left + ship_mid_width;
+				
+				ship_bottom_top = top + 35;
+				ship_bottom_left = left + 46;
+				ship_bottom_bottom = ship_bottom_top + ship_bottom_height;
+				ship_bottom_right = ship_bottom_left + ship_bottom_width;
+			}
+			
+			/************************
+			 * background scrolling *
+			 ************************/
+			// speed in milliseconds
+			var scrollSpeed = 70;
+			// mod value
+			var modValue = 500;
+			// set the default position
+			var current = 0;
+			// set the number of pixels to scroll by
+			var pixelChange = 1;
+			// set the direction
+			var direction = 'h';
+			
+			var currObject = 0;
+			
+			function generateObject() {
+				$('#obstacleWrapper').append("<div id='baddie_" + currObject + "' class='baddie'></div>");
+				$('#baddie_'+ currObject).css('top', function(){ return Math.floor(Math.random()*430); });
+				$('#baddie_'+ currObject).css('right', function(){ return -(Math.floor(Math.random()*150)) - 60; });
+				currObject++;
+			}
+			
+			function bgscroll(){
+				if( !pauseGame ) {
+					$('#score').text( "LEVEL: " + pixelChange + " SCORE: " + (current * -1));
+					
+					// 1 pixel row at a time
+					current -= pixelChange;
+					
+					if( Math.floor(Math.random()*100) <= pixelChange ) {
+						generateObject();
+					}
+					
+					getPositionShip();
+					
+					$('.baddie').each( function() {
+						$(this).css('right', (Number($(this).css('right').split("px")[0]) + pixelChange + 1) + "px");
+						var top = $(this).position().top;
+						var left = $(this).position().left;
+						var right = left + baddie_width;
+						var bottom = top + baddie_height;
+						
+						var boom = false;
+						
+						if( ((top >= ship_top_top && top <= ship_top_bottom) || (bottom >= ship_top_top && bottom <= ship_top_bottom)) && ((left >= ship_top_left && left <= ship_top_right) || (right >= ship_top_left && right <= ship_top_right)) ) {
+							boom = true;
+						} 
+						if( ((top >= ship_mid_top && top <= ship_mid_bottom) || (bottom >= ship_mid_top && bottom <= ship_mid_bottom)) && ((left >= ship_mid_left && left <= ship_mid_right) || (right >= ship_mid_left && right <= ship_mid_right)) ) {
+							boom = true;
+						} 
+						if( ((top >= ship_bottom_top && top <= ship_bottom_bottom) || (bottom >= ship_bottom_top && bottom <= ship_bottom_bottom)) && ((left >= ship_bottom_left && left <= ship_bottom_right) || (right >= ship_bottom_left && right <= ship_bottom_right)) ) {
+							boom = true;
+						} 
+						if( (Number($(this).css('right').split("px")[0]) > 400) || boom ) {
+							$(this).remove();
+						}
+					});
+					
+					// move the background with backgrond-position css properties
+					$('#background').css( "backgroundPosition", ( direction == 'h' ) ? current + "px 0" : "0 " + current + "px" );
+					if( current % 700 == 0 ) {
+						scrollSpeed += 3;
+						pixelChange += 1;
+					}
+				}
+			}
+			window.addEventListener( 'load', function () {
+				document.addEventListener('deviceready', function () {
+					$('a.stopGame').buttonMarkup({ inline: "true" });
+					$('.startGame').click( function() {
+						pauseGame = false;
+					});
+					$('.stopGame').click( function() {
+						pauseGame = true;
+					});
+					//start scrolling
+					setInterval( "bgscroll()", scrollSpeed ); 
+					
+					$( "#hero" ).draggable({ containment: "parent" }).addTouch();
+				}, false);
+			}, false );
+		</script>
+	</head>
+	<body>
+		<div id='home' data-role="page">
+			<div data-role="header"> 
+				<h1>Ship It!</h1>
+			</div>
+			<a href="#gameplay" class='startGame' data-iconpos="right" data-icon="arrow-r" data-role="button">Start Mission</a>
+		</div>
+		<div id='gameplay' data-role="page">
+			<div id='background'>
+				<a href="#home" data-iconpos="notext" class='stopGame' data-icon="grid" data-role="button">Pause/Menu</a>
+				<div id='obstacleWrapper'>
+				</div>
+				<div id='score'>
+				</div>
+				<div id='hero'>	
+					<div id='flame'>
+					</div>
+					<div id='ship'>
+						<div id='ship_top'>
+						</div>
+						<div id='ship_mid'>
+						</div>
+						<div id='ship_bottom'>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

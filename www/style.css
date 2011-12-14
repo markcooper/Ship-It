@@ -1,0 +1,78 @@
+body {
+	width: 320px;
+	height: 460px;
+	margin: 0;
+	padding: 0;
+}
+
+#background {
+	background: url("images/cave_bg.jpg") repeat-x 0px 0px transparent;
+	height: 460px;
+	width: 320px;
+	margin: 0;
+	padding: 0;
+	position: relative;
+}
+
+#score {
+	color: #FFFFFF;
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 5px;
+}
+#hero {
+	height: 58px;
+    width: 73px;
+}
+
+#ship {
+	background: url("images/ship.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 58px;
+    position: absolute;
+    right: 0;
+    width: 57px;
+}
+
+#ship_top {
+	height: 17px;
+    width: 57px;
+	/*border: 1px solid yellow;*/
+}
+
+#ship_mid {
+	margin-left: 14px;
+	width: 34px;
+	height: 18px;
+	/*border: 1px solid red;*/
+}
+
+#ship_bottom {
+	margin-left: 30px;
+	width: 17px;
+	height: 21px;
+	/*border: 1px solid blue;*/
+}
+
+#flame {
+	width: 31px;
+	height: 58px;
+	background: url("images/sidefire.gif") no-repeat 0 -5px transparent;
+	position: absolute;
+}
+
+.baddie {
+	position: absolute;
+	width: 48px;
+	height: 22px;
+	background: url("images/baddie_ship.gif") no-repeat 0 0 transparent;
+}
+
+#debug {
+	color: #016655;
+    height: 300px;
+    position: absolute;
+    width: 300px;
+    top: 0;
+}
