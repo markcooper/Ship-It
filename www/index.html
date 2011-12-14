@@ -16,6 +16,8 @@
 		<script type="text/javascript" src="js/jquery.mobile-1.0.min.js"></script>
 		<script type="text/javascript">
 			var pauseGame = true;
+			var boom = false;
+			
 			var ship_top_top, ship_top_left, ship_mid_top, ship_mid_left, ship_bottom_top, ship_bottom_left, ship_top_bottom, ship_top_right, ship_mid_bottom, ship_mid_right, ship_bottom_bottom, ship_bottom_right;
 			var ship_top_width = 57;
 			var ship_top_height = 17;
@@ -89,8 +91,6 @@
 						var left = $(this).position().left;
 						var right = left + baddie_width;
 						var bottom = top + baddie_height;
-						
-						var boom = false;
 						
 						if( ((top >= ship_top_top && top <= ship_top_bottom) || (bottom >= ship_top_top && bottom <= ship_top_bottom)) && ((left >= ship_top_left && left <= ship_top_right) || (right >= ship_top_left && right <= ship_top_right)) ) {
 							boom = true;
